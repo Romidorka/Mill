@@ -1,14 +1,14 @@
 package com.company;
 
-import java.util.Arrays;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
-        Board board = new Board();
-//        board.randomize_board();
-        board.fill(1);
-        System.out.println(Arrays.toString(board.board));
+        Board9 board = new Board9();
+        Scanner scanner = new Scanner(System.in);
+        board.randomize_board();
+
         board.print_board();
     }
 }
