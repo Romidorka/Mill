@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Mill:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Mill_jar</output-path>
+    <root id="archive" name="Mill.jar">
+      <element id="module-output" name="Mill" />
+    </root>
+  </artifact>
+</component>

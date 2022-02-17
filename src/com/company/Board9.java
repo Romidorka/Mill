@@ -19,11 +19,47 @@ public class Board9 {
     public static int PHASE_PLACING = 0;
     public static int PHASE_MOVING = 1;
 
-    int board[] = new int[24];
+    int[] board;
+    int[] is_mill;
+    int[][] neighbors;
+
     int phase = PHASE_PLACING;
     int turnsCount = 0;
 
+    protected void init(){
+        board = new int[24];
+        is_mill = new int[24];
+        neighbors = new int[24][4];
+
+        neighbors[0]= new int[]{1, -1, 9, -1};
+        neighbors[1]= new int[]{2, 0, 4, -1};
+        neighbors[2]= new int[]{-1, 1, 14, -1};
+        neighbors[3]= new int[]{4, -1, 10, -1};
+        neighbors[4]= new int[]{5, 3, 7, 1};
+        neighbors[5]= new int[]{-1, 4, 13, -1};
+        neighbors[6]= new int[]{7, -1, 11, -1};
+        neighbors[7]= new int[]{8, 6, -1, 4};
+        neighbors[8]= new int[]{-1, 7, 12, -1};
+        neighbors[9]= new int[]{10, -1, 21, 0};
+        neighbors[10]= new int[]{11, 9, 18, 3};
+        neighbors[11]= new int[]{-1, 10, 15, 6};
+        neighbors[12]= new int[]{13, -1, 17, 8};
+        neighbors[13]= new int[]{14, 12, 20, 5};
+        neighbors[14]= new int[]{-1, 13, 23, 2};
+        neighbors[15]= new int[]{16, -1, -1, 11};
+        neighbors[16]= new int[]{17, 15, 19, -1};
+        neighbors[17]= new int[]{-1, 16, -1, 12};
+        neighbors[18]= new int[]{19, -1, -1, 10};
+        neighbors[19]= new int[]{20, 18, 22, 16};
+        neighbors[20]= new int[]{-1, 19, -1, 13};
+        neighbors[21]= new int[]{22, -1, -1, 9};
+        neighbors[22]= new int[]{23, 21, -1, 19};
+        neighbors[23]= new int[]{-1, 22, -1, 14};
+    }
+
     Board9(){
+        init();
+
         for(byte i=0;i<24;i++){
             board[i]=0;
         }
@@ -49,6 +85,36 @@ public class Board9 {
         }else{
             return false;
         }
+    }
+
+    public void check_mills(int index){
+
+    }
+
+    private void check_mill(int index){
+        int[] n = get_neighbors(index);
+
+        if (board[n[0]] == board[n[1]] && board[n[0]] == board[index]) {
+            is_mill[n[0]] = board[n[0]];
+            is_mill[n[1]] = board[n[0]];
+            is_mill[index]= board[n[0]];
+        }else{
+            is_mill[n[0]] = 0;
+            is_mill[n[1]] = 0;
+            is_mill[index]= 0;
+        }
+        if (board[n[2]] == board[n[3]] && board[n[2]] == board[index]) {
+            is_mill[n[2]] = board[n[0]];
+            is_mill[n[3]] = board[n[0]];
+            is_mill[index]= board[n[0]];
+        }else{
+            is_mill[n[2]] = 0;
+            is_mill[n[3]] = 0;
+        }
+    }
+
+    public int[] get_neighbors(int index){
+        return neighbors[index];
     }
 
     public String indexToCords(int index){
