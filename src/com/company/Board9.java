@@ -76,7 +76,7 @@ public class Board9 {
         }
     }
 
-    public void move(int player, String cords1, String cords2){
+    public boolean move(int player, String cords1, String cords2){
         int index1 = cordsToIndex(cords1);
         int index2 = cordsToIndex(cords2);
         if(board[index1]==player && board[index2]==0 && is_neighbor(index1, index2)){
@@ -84,6 +84,9 @@ public class Board9 {
             board[index2]=player;
             check_mills(index1);
             check_mills(index2);
+            return true;
+        }else{
+            return false;
         }
     }
 
@@ -94,6 +97,18 @@ public class Board9 {
             board[index1]=0;
             board[index2]=player;
             check_mills(index1);
+            check_mills(index2);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean kill(int player, String cords1, String cords2){
+        int index1 = cordsToIndex(cords1);
+        int index2 = cordsToIndex(cords2);
+        if(board[index1]==player && board[index2]!=0){
+            board[index2]=0;
             check_mills(index2);
             return true;
         }else{
