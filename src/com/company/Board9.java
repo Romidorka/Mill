@@ -69,18 +69,32 @@ public class Board9 {
         int index = cordsToIndex(cords);
         if(board[index]==0){
             board[index] = (byte)player;
+            check_mills(index);
             return true;
         }else{
             return false;
         }
     }
 
-    public boolean move(int player, String cords1, String cords2){
+    public void move(int player, String cords1, String cords2){
+        int index1 = cordsToIndex(cords1);
+        int index2 = cordsToIndex(cords2);
+        if(board[index1]==player && board[index2]==0 && is_neighbor(index1, index2)){
+            board[index1]=0;
+            board[index2]=player;
+            check_mills(index1);
+            check_mills(index2);
+        }
+    }
+
+    public boolean fly(int player, String cords1, String cords2){
         int index1 = cordsToIndex(cords1);
         int index2 = cordsToIndex(cords2);
         if(board[index1]==player && board[index2]==0){
             board[index1]=0;
             board[index2]=player;
+            check_mills(index1);
+            check_mills(index2);
             return true;
         }else{
             return false;
@@ -88,7 +102,12 @@ public class Board9 {
     }
 
     public void check_mills(int index){
-
+        int[] n = get_neighbors(index);
+        for(int i=0;i<4;i++){
+            if(n[i] != -1){
+                check_mill(n[i]);
+            }
+        }
     }
 
     private void check_mill(int index){
@@ -113,12 +132,22 @@ public class Board9 {
         }
     }
 
+    private boolean is_neighbor(int index, int neighbor){
+        int[] n = get_neighbors(index);
+        for(int i=0;i<4;i++){
+            if(n[i] == neighbor){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int[] get_neighbors(int index){
         return neighbors[index];
     }
 
     public String indexToCords(int index){
-        String cordsArray[]={
+        String[] cordsArray ={
                 "a7", "7d", "7g",
                 "6b", "6d", "6f",
                 "5c", "5d", "5e",
@@ -132,7 +161,7 @@ public class Board9 {
     }
 
     public int cordsToIndex(String cords){
-        String cordsArray[]={
+        String[] cordsArray ={
                 "a7", "7d", "7g",
                 "6b", "6d", "6f",
                 "5c", "5d", "5e",
@@ -157,7 +186,7 @@ public class Board9 {
     }
 
     private String[] get_board_with_chars(){
-        String tmpBoard[] = new String[24];
+        String[] tmpBoard = new String[24];
         for(int i=0;i<24;i++){
             switch (board[i]) {
                 case 0 -> tmpBoard[i] = "●";
@@ -169,7 +198,7 @@ public class Board9 {
     }
 
     public void print_board(){
-        String strBoard[] = get_board_with_chars();
+        String[] strBoard = get_board_with_chars();
 
         System.out.printf("""
                         %s⎻⎻⎻⎻⎻%s⎻⎻⎻⎻⎻%s
