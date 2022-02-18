@@ -16,6 +16,13 @@ public class Rules {
         this.can_move_while_placing = can_move_while_placing;
     }
 
-
+    public boolean is_win(int player){
+        for(int i=0;i<2;i++){
+            if(men_count - board.died_dots[i] < 3 && i+1 == player){
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

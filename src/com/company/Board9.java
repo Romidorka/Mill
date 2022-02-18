@@ -24,7 +24,8 @@ public class Board9 {
     int[][] neighbors;
 
     int phase = PHASE_PLACING;
-    int turnsCount = 0;
+    int[] died_dots = {0, 0};
+    int[] placed_dots = {0, 0};
 
     protected void init(){
         board = new int[24];
@@ -69,6 +70,7 @@ public class Board9 {
         int index = cordsToIndex(cords);
         if(board[index]==0){
             board[index] = (byte)player;
+            placed_dots[player-1]+=1;
             check_mills(index);
             return true;
         }else{
@@ -109,6 +111,7 @@ public class Board9 {
         int index2 = cordsToIndex(cords2);
         if(board[index1]==player && board[index2]!=0){
             board[index2]=0;
+            died_dots[player-1]+=1;
             check_mills(index2);
             return true;
         }else{
@@ -128,22 +131,26 @@ public class Board9 {
     private void check_mill(int index){
         int[] n = get_neighbors(index);
 
-        if (board[n[0]] == board[n[1]] && board[n[0]] == board[index]) {
-            is_mill[n[0]] = board[n[0]];
-            is_mill[n[1]] = board[n[0]];
-            is_mill[index]= board[n[0]];
-        }else{
-            is_mill[n[0]] = 0;
-            is_mill[n[1]] = 0;
-            is_mill[index]= 0;
+        if(n[0]!=-1 && n[1]!=-1) {
+            if (board[n[0]] == board[n[1]] && board[n[0]] == board[index]) {
+                is_mill[n[0]] = board[n[0]];
+                is_mill[n[1]] = board[n[0]];
+                is_mill[index] = board[n[0]];
+            } else {
+                is_mill[n[0]] = 0;
+                is_mill[n[1]] = 0;
+                is_mill[index] = 0;
+            }
         }
-        if (board[n[2]] == board[n[3]] && board[n[2]] == board[index]) {
-            is_mill[n[2]] = board[n[0]];
-            is_mill[n[3]] = board[n[0]];
-            is_mill[index]= board[n[0]];
-        }else{
-            is_mill[n[2]] = 0;
-            is_mill[n[3]] = 0;
+        if(n[2]!=-1 && n[3]!=-1) {
+            if (board[n[2]] == board[n[3]] && board[n[2]] == board[index]) {
+                is_mill[n[2]] = board[n[0]];
+                is_mill[n[3]] = board[n[0]];
+                is_mill[index] = board[n[0]];
+            } else {
+                is_mill[n[2]] = 0;
+                is_mill[n[3]] = 0;
+            }
         }
     }
 
@@ -177,7 +184,7 @@ public class Board9 {
 
     public int cordsToIndex(String cords){
         String[] cordsArray ={
-                "a7", "7d", "7g",
+                "7a", "7d", "7g",
                 "6b", "6d", "6f",
                 "5c", "5d", "5e",
                 "4a", "4b", "4c",
