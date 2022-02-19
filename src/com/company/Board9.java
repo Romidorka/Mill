@@ -12,12 +12,12 @@ package com.company;
 
 
 public class Board9 {
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_RED = "\u001B[31m";
+    private static final String ANSI_GREEN = "\u001B[32m";
 
-    public static int PHASE_PLACING = 0;
-    public static int PHASE_MOVING = 1;
+    public final static int PHASE_PLACING = 0;
+    public final static int PHASE_MOVING = 1;
 
     int[] board;
     int[] is_mill;
@@ -26,6 +26,8 @@ public class Board9 {
     int phase = PHASE_PLACING;
     int[] died_dots = {0, 0};
     int[] placed_dots = {0, 0};
+    private int men_count;
+    private int men_need_to_fly;
 
     protected void init(){
         board = new int[24];
@@ -59,6 +61,8 @@ public class Board9 {
     }
 
     Board9(){
+
+
         init();
 
         for(byte i=0;i<24;i++){
@@ -66,19 +70,16 @@ public class Board9 {
         }
     }
 
-    public boolean place(String cords, int player){
+    public void place(int player, String cords){
         int index = cordsToIndex(cords);
         if(board[index]==0){
             board[index] = (byte)player;
             placed_dots[player-1]+=1;
             check_mills(index);
-            return true;
-        }else{
-            return false;
         }
     }
 
-    public boolean move(int player, String cords1, String cords2){
+    public void move(int player, String cords1, String cords2){
         int index1 = cordsToIndex(cords1);
         int index2 = cordsToIndex(cords2);
         if(board[index1]==player && board[index2]==0 && is_neighbor(index1, index2)){
@@ -86,36 +87,27 @@ public class Board9 {
             board[index2]=player;
             check_mills(index1);
             check_mills(index2);
-            return true;
-        }else{
-            return false;
         }
     }
 
-    public boolean fly(int player, String cords1, String cords2){
+    public void fly(int player, String cords1, String cords2){
         int index1 = cordsToIndex(cords1);
         int index2 = cordsToIndex(cords2);
-        if(board[index1]==player && board[index2]==0){
+        if(board[index1]==player && board[index2]==0 && men_count-died_dots[player-1] == men_need_to_fly){
             board[index1]=0;
             board[index2]=player;
             check_mills(index1);
             check_mills(index2);
-            return true;
-        }else{
-            return false;
         }
     }
 
-    public boolean kill(int player, String cords1, String cords2){
+    public void kill(int player, String cords1, String cords2){
         int index1 = cordsToIndex(cords1);
         int index2 = cordsToIndex(cords2);
         if(board[index1]==player && board[index2]!=0){
             board[index2]=0;
             died_dots[player-1]+=1;
             check_mills(index2);
-            return true;
-        }else{
-            return false;
         }
     }
 
@@ -154,7 +146,7 @@ public class Board9 {
         }
     }
 
-    private boolean is_neighbor(int index, int neighbor){
+    public boolean is_neighbor(int index, int neighbor){
         int[] n = get_neighbors(index);
         for(int i=0;i<4;i++){
             if(n[i] == neighbor){
@@ -166,6 +158,14 @@ public class Board9 {
 
     public int[] get_neighbors(int index){
         return neighbors[index];
+    }
+
+    public static int opponent(int player){
+        return switch (player) {
+            case 1 -> 2;
+            case 2 -> 1;
+            default -> 0;
+        };
     }
 
     public String indexToCords(int index){
@@ -205,6 +205,11 @@ public class Board9 {
         for(int i=0;i<24;i++){
             board[i]=(byte) (Math.random()*3);
         }
+    }
+
+    public void setRules(int men_count, int men_need_to_fly){
+        this.men_count=men_count;
+        this.men_need_to_fly=men_need_to_fly;
     }
 
     private String[] get_board_with_chars(){
