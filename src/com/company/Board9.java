@@ -227,16 +227,31 @@ public class Board9 {
     public void print_board(){
         String[] strBoard = get_board_with_chars();
 
-        System.out.printf("""
-                        %s⎻⎻⎻⎻⎻%s⎻⎻⎻⎻⎻%s
-                        | %s⎻⎻⎻%s⎻⎻⎻%s |
-                        | | %s⎻%s⎻%s | |
-                        %s⎻%s⎻%s   %s⎻%s⎻%s
-                        | | %s⎻%s⎻%s | |
-                        | %s⎻⎻⎻%s⎻⎻⎻%s |
-                        %s⎻⎻⎻⎻⎻%s⎻⎻⎻⎻⎻%s%n""",  strBoard[0], strBoard[1], strBoard[2], strBoard[3], strBoard[4], strBoard[5],
-                                strBoard[6], strBoard[7], strBoard[8], strBoard[9], strBoard[10], strBoard[11],
-                                strBoard[12], strBoard[13], strBoard[14], strBoard[15], strBoard[16], strBoard[17],
-                                strBoard[18], strBoard[19], strBoard[20], strBoard[21], strBoard[22], strBoard[23]);
+        if(!System.getProperty("os.name").startsWith("Windows")) {
+            System.out.printf("""
+                            %s⎻⎻⎻⎻⎻%s⎻⎻⎻⎻⎻%s
+                            | %s⎻⎻⎻%s⎻⎻⎻%s |
+                            | | %s⎻%s⎻%s | |
+                            %s⎻%s⎻%s   %s⎻%s⎻%s
+                            | | %s⎻%s⎻%s | |
+                            | %s⎻⎻⎻%s⎻⎻⎻%s |
+                            %s⎻⎻⎻⎻⎻%s⎻⎻⎻⎻⎻%s%n""", strBoard[0], strBoard[1], strBoard[2], strBoard[3], strBoard[4], strBoard[5],
+                    strBoard[6], strBoard[7], strBoard[8], strBoard[9], strBoard[10], strBoard[11],
+                    strBoard[12], strBoard[13], strBoard[14], strBoard[15], strBoard[16], strBoard[17],
+                    strBoard[18], strBoard[19], strBoard[20], strBoard[21], strBoard[22], strBoard[23]);
+        }else{
+            System.out.printf("""
+                            %s-----%s-----%s
+                            |  %s--%s--%s  |
+                            |  |%s-%s-%s|  |
+                            %s⎻⎻%s⎻%s   %s⎻%s⎻%s
+                            |  |%s-%s-%s|  |
+                            |  %s--%s--%s  |
+                            %s-----%s-----%s%n""", strBoard[0], strBoard[1], strBoard[2], strBoard[3], strBoard[4], strBoard[5],
+                    strBoard[6], strBoard[7], strBoard[8], strBoard[9], strBoard[10], strBoard[11],
+                    strBoard[12], strBoard[13], strBoard[14], strBoard[15], strBoard[16], strBoard[17],
+                    strBoard[18], strBoard[19], strBoard[20], strBoard[21], strBoard[22], strBoard[23]);
+
+        }
     }
 }
