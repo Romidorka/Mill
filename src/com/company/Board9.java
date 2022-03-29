@@ -12,9 +12,9 @@ package com.company;
 
 
 public class Board9 {
-    private static final String ANSI_RESET = "\u001B[0m";
-    private static final String ANSI_RED = "\u001B[31m";
-    private static final String ANSI_GREEN = "\u001B[32m";
+    static final String ANSI_RESET = "\u001B[0m";
+    static final String ANSI_RED = "\u001B[31m";
+    static final String ANSI_GREEN = "\u001B[32m";
 
     public final static int PHASE_PLACING = 0;
     public final static int PHASE_MOVING = 1;
@@ -26,6 +26,8 @@ public class Board9 {
     int phase = PHASE_PLACING;
     int[] died_dots = {0, 0};
     int[] placed_dots = {0, 0};
+    int new_mill_cords = -1;
+    public boolean mustKill=false;
     private int men_count;
     private int men_need_to_fly;
 
@@ -61,8 +63,6 @@ public class Board9 {
     }
 
     Board9(){
-
-
         init();
 
         for(byte i=0;i<24;i++){
@@ -75,7 +75,11 @@ public class Board9 {
         if(board[index]==0){
             board[index] = (byte)player;
             placed_dots[player-1]+=1;
-            check_mills(index);
+//            check_mills(index);
+
+            if(placed_dots[0] == men_count && placed_dots[1] == men_count){
+                phase = PHASE_MOVING;
+            }
         }
     }
 
@@ -85,8 +89,8 @@ public class Board9 {
         if(board[index1]==player && board[index2]==0 && is_neighbor(index1, index2)){
             board[index1]=0;
             board[index2]=player;
-            check_mills(index1);
-            check_mills(index2);
+//            check_mills(index1);
+//            check_mills(index2);
         }
     }
 
@@ -96,8 +100,8 @@ public class Board9 {
         if(board[index1]==player && board[index2]==0 && men_count-died_dots[player-1] == men_need_to_fly){
             board[index1]=0;
             board[index2]=player;
-            check_mills(index1);
-            check_mills(index2);
+//            check_mills(index1);
+//            check_mills(index2);
         }
     }
 
@@ -107,17 +111,43 @@ public class Board9 {
         if(board[index1]==player && board[index2]!=0){
             board[index2]=0;
             died_dots[player-1]+=1;
-            check_mills(index2);
+//            check_mills(index2);
         }
     }
 
-    public void check_mills(int index){
+    public void check_mills(int index){ // Обновляет массив с мельницами
         int[] n = get_neighbors(index);
-        for(int i=0;i<4;i++){
+        check_mill(index); // Проверяем центральную клетку
+        for(int i=0;i<4;i++){ // Проверяем клетки воокруг центральной
             if(n[i] != -1){
                 check_mill(n[i]);
             }
         }
+    }
+
+    public boolean in_mills(int index){ // Принадлежит ли точка к мельнице
+        int[] n = get_neighbors(index);
+        for(int i=0;i<4;i++){
+            if(n[i] != -1){
+                if(in_mill(n[i])) return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean in_mill(int index){ // Является ли точка центром мельницы
+        int[] n = get_neighbors(index);
+        if(n[0]!=-1 && n[1]!=-1) {
+            if (board[n[0]] == board[n[1]] && board[n[0]] == board[index] && is_mill[n[0]] != board[n[0]]) {
+                return true;
+            }
+        }
+        if(n[2]!=-1 && n[3]!=-1) {
+            if (board[n[2]] == board[n[3]] && board[n[2]] == board[index] && is_mill[n[2]] != board[n[2]]) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void check_mill(int index){
@@ -128,17 +158,19 @@ public class Board9 {
                 is_mill[n[0]] = board[n[0]];
                 is_mill[n[1]] = board[n[0]];
                 is_mill[index] = board[n[0]];
+                new_mill_cords = index;
             } else {
                 is_mill[n[0]] = 0;
                 is_mill[n[1]] = 0;
                 is_mill[index] = 0;
             }
         }
-        if(n[2]!=-1 && n[3]!=-1) {
+        if(n[2]!=-1 && n[3]!=-1 && n[0]!=-1) {
             if (board[n[2]] == board[n[3]] && board[n[2]] == board[index]) {
                 is_mill[n[2]] = board[n[0]];
                 is_mill[n[3]] = board[n[0]];
                 is_mill[index] = board[n[0]];
+                new_mill_cords = index;
             } else {
                 is_mill[n[2]] = 0;
                 is_mill[n[3]] = 0;
@@ -170,7 +202,7 @@ public class Board9 {
 
     public String indexToCords(int index){
         String[] cordsArray ={
-                "a7", "7d", "7g",
+                "7a", "7d", "7g",
                 "6b", "6d", "6f",
                 "5c", "5d", "5e",
                 "4a", "4b", "4c",
@@ -224,34 +256,58 @@ public class Board9 {
         return tmpBoard;
     }
 
+    private String[] get_board_with_chars_windows(){
+        String[] tmpBoard = new String[24];
+        for(int i=0;i<24;i++){
+            switch (board[i]) {
+                case 0 -> tmpBoard[i] = ANSI_RESET + "⊙" + ANSI_RESET;
+                case 1 -> tmpBoard[i] = ANSI_GREEN + "⊙" + ANSI_RESET;
+                case 2 -> tmpBoard[i] = ANSI_RED + "⊙" + ANSI_RESET;
+            }
+        }
+        return tmpBoard;
+    }
+
+    public void clearScreen(){
+        for(int i=0;i<100;i++){
+            System.out.print("\n");
+        }
+    }
+
     public void print_board(){
-        String[] strBoard = get_board_with_chars();
+        String[] strBoard;
+        if(!System.getProperty("os.name").startsWith("Windows")) {
+            strBoard = get_board_with_chars();
+        }else{
+            strBoard = get_board_with_chars_windows();
+        }
 
         if(!System.getProperty("os.name").startsWith("Windows")) {
             System.out.printf("""
-                            %s⎻⎻⎻⎻⎻%s⎻⎻⎻⎻⎻%s
-                            | %s⎻⎻⎻%s⎻⎻⎻%s |
-                            | | %s⎻%s⎻%s | |
-                            %s⎻%s⎻%s   %s⎻%s⎻%s
-                            | | %s⎻%s⎻%s | |
-                            | %s⎻⎻⎻%s⎻⎻⎻%s |
-                            %s⎻⎻⎻⎻⎻%s⎻⎻⎻⎻⎻%s%n""", strBoard[0], strBoard[1], strBoard[2], strBoard[3], strBoard[4], strBoard[5],
+                            7 %s⎻⎻⎻⎻⎻%s⎻⎻⎻⎻⎻%s
+                            6 | %s⎻⎻⎻%s⎻⎻⎻%s |
+                            5 | | %s⎻%s⎻%s | |
+                            4 %s⎻%s⎻%s   %s⎻%s⎻%s
+                            3 | | %s⎻%s⎻%s | |
+                            2 | %s⎻⎻⎻%s⎻⎻⎻%s |
+                            1 %s⎻⎻⎻⎻⎻%s⎻⎻⎻⎻⎻%s
+                              a b c d e f g""", strBoard[0], strBoard[1], strBoard[2], strBoard[3], strBoard[4], strBoard[5],
                     strBoard[6], strBoard[7], strBoard[8], strBoard[9], strBoard[10], strBoard[11],
                     strBoard[12], strBoard[13], strBoard[14], strBoard[15], strBoard[16], strBoard[17],
                     strBoard[18], strBoard[19], strBoard[20], strBoard[21], strBoard[22], strBoard[23]);
         }else{
             System.out.printf("""
-                            %s-----%s-----%s
-                            |  %s--%s--%s  |
-                            |  |%s-%s-%s|  |
-                            %s⎻⎻%s⎻%s   %s⎻%s⎻%s
-                            |  |%s-%s-%s|  |
-                            |  %s--%s--%s  |
-                            %s-----%s-----%s%n""", strBoard[0], strBoard[1], strBoard[2], strBoard[3], strBoard[4], strBoard[5],
+                            7 %s-----%s-----%s
+                            6 |  %s--%s--%s  |
+                            5 |  |%s-%s-%s|  |
+                            4 %s⎻⎻%s⎻%s   %s⎻%s⎻%s
+                            3 |  |%s-%s-%s|  |
+                            2 |  %s--%s--%s  |
+                            1 %s-----%s-----%s
+                              a  b c d e f  g""", strBoard[0], strBoard[1], strBoard[2], strBoard[3], strBoard[4], strBoard[5],
                     strBoard[6], strBoard[7], strBoard[8], strBoard[9], strBoard[10], strBoard[11],
                     strBoard[12], strBoard[13], strBoard[14], strBoard[15], strBoard[16], strBoard[17],
                     strBoard[18], strBoard[19], strBoard[20], strBoard[21], strBoard[22], strBoard[23]);
-
         }
     }
 }
