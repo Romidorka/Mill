@@ -36,7 +36,7 @@ public class Main {
                     }
                 }
             }catch (ArrayIndexOutOfBoundsException e){
-                System.out.println(board.ANSI_RED + "Неверные кординаты" + board.ANSI_RESET);
+                System.out.println(Colors.ANSI_RED + "Неверные кординаты" + Colors.ANSI_RESET);
                 TimeUnit.SECONDS.sleep(2);
             }
         }

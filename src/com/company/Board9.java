@@ -12,10 +12,6 @@ package com.company;
 
 
 public class Board9 {
-    static final String ANSI_RESET = "\u001B[0m";
-    static final String ANSI_RED = "\u001B[31m";
-    static final String ANSI_GREEN = "\u001B[32m";
-
     public final static int PHASE_PLACING = 0;
     public final static int PHASE_MOVING = 1;
 
@@ -249,8 +245,8 @@ public class Board9 {
         for(int i=0;i<24;i++){
             switch (board[i]) {
                 case 0 -> tmpBoard[i] = "●";
-                case 1 -> tmpBoard[i] = ANSI_GREEN + "⊙" + ANSI_RESET;
-                case 2 -> tmpBoard[i] = ANSI_RED + "⊙" + ANSI_RESET;
+                case 1 -> tmpBoard[i] = Colors.ANSI_GREEN + "⊙" + Colors.ANSI_RESET;
+                case 2 -> tmpBoard[i] = Colors.ANSI_RED + "⊙" + Colors.ANSI_RESET;
             }
         }
         return tmpBoard;
@@ -260,9 +256,9 @@ public class Board9 {
         String[] tmpBoard = new String[24];
         for(int i=0;i<24;i++){
             switch (board[i]) {
-                case 0 -> tmpBoard[i] = ANSI_RESET + "⊙" + ANSI_RESET;
-                case 1 -> tmpBoard[i] = ANSI_GREEN + "⊙" + ANSI_RESET;
-                case 2 -> tmpBoard[i] = ANSI_RED + "⊙" + ANSI_RESET;
+                case 0 -> tmpBoard[i] = Colors.ANSI_RESET + "⊙" + Colors.ANSI_RESET;
+                case 1 -> tmpBoard[i] = Colors.ANSI_GREEN + "⊙" + Colors.ANSI_RESET;
+                case 2 -> tmpBoard[i] = Colors.ANSI_RED + "⊙" + Colors.ANSI_RESET;
             }
         }
         return tmpBoard;
