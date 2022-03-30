@@ -22,6 +22,9 @@ public class Main {
             try {
                 System.out.print("\nВаш ход: ");
                 cords1 = scanner.nextLine();
+                if(cords1.equals("exit") || cords1.equals("quit") || cords1.equals("end")){
+                    System.exit(0);
+                }
                 if (game.needSecondCords(cords1)) {
                     System.out.print("\nВаш ход: ");
                     cords2 = scanner.nextLine();
@@ -36,6 +39,7 @@ public class Main {
                     }
                 }
             }catch (ArrayIndexOutOfBoundsException e){
+                e.printStackTrace();
                 System.out.println(Colors.ANSI_RED + "Неверные кординаты" + Colors.ANSI_RESET);
                 TimeUnit.SECONDS.sleep(2);
             }

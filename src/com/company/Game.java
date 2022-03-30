@@ -19,6 +19,9 @@ public class Game {
             board.place(whose_turn, cords);
             whose_turn = Board9.opponent(whose_turn);
         }
+        if(board.mustKill){
+            board.mustKill=false;
+        }
     }
 
     void makeTurn(String cords1, String cords2){
@@ -48,11 +51,7 @@ public class Game {
     }
 
     boolean canTurn(String cords){
-        if(rules.canPlace(whose_turn, cords) || (board.new_mill_cords != -1 && rules.canKill(whose_turn, board.indexToCords(board.new_mill_cords), cords))){
-            return true;
-        }else{
-            return false;
-        }
+        return rules.canPlace(whose_turn, cords) || (board.new_mill_cords != -1 && rules.canKill(whose_turn, board.indexToCords(board.new_mill_cords), cords));
     }
 
     boolean canTurn(String cords1, String cords2){

@@ -49,14 +49,7 @@ public class Rules {
     public boolean canKill(int player, String cords1, String cords2){
         int index1 = board.cordsToIndex(cords1);
         int index2 = board.cordsToIndex(cords2);
-        if((board.board[index1] == player && board.board[index2] == Board9.opponent(player) && board.is_mill[index1] == player) || board.mustKill){
-            if(board.mustKill){
-                board.mustKill=false;
-            }
-            return true;
-        }else{
-            return false;
-        }
+        return board.board[index1] == player && board.board[index2] != player && board.board[index2] != 0 || board.mustKill;
 
     }
 }

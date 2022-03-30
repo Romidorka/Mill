@@ -68,7 +68,7 @@ public class Board9 {
 
     public void place(int player, String cords){
         int index = cordsToIndex(cords);
-        if(board[index]==0){
+//        if(board[index]==0){
             board[index] = (byte)player;
             placed_dots[player-1]+=1;
 //            check_mills(index);
@@ -76,39 +76,39 @@ public class Board9 {
             if(placed_dots[0] == men_count && placed_dots[1] == men_count){
                 phase = PHASE_MOVING;
             }
-        }
+//        }
     }
 
     public void move(int player, String cords1, String cords2){
         int index1 = cordsToIndex(cords1);
         int index2 = cordsToIndex(cords2);
-        if(board[index1]==player && board[index2]==0 && is_neighbor(index1, index2)){
+//        if(board[index1]==player && board[index2]==0 && is_neighbor(index1, index2)){
             board[index1]=0;
             board[index2]=player;
 //            check_mills(index1);
 //            check_mills(index2);
-        }
+//        }
     }
 
     public void fly(int player, String cords1, String cords2){
         int index1 = cordsToIndex(cords1);
         int index2 = cordsToIndex(cords2);
-        if(board[index1]==player && board[index2]==0 && men_count-died_dots[player-1] == men_need_to_fly){
+//        if(board[index1]==player && board[index2]==0 && men_count-died_dots[player-1] == men_need_to_fly){
             board[index1]=0;
             board[index2]=player;
 //            check_mills(index1);
 //            check_mills(index2);
-        }
+//        }
     }
 
     public void kill(int player, String cords1, String cords2){
         int index1 = cordsToIndex(cords1);
         int index2 = cordsToIndex(cords2);
-        if(board[index1]==player && board[index2]!=0){
+//        if(board[index1]==player && board[index2]!=0){
             board[index2]=0;
             died_dots[player-1]+=1;
 //            check_mills(index2);
-        }
+//        }
     }
 
     public void check_mills(int index){ // Обновляет массив с мельницами
