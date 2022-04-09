@@ -12,12 +12,15 @@ public class Game {
     }
 
     void makeTurn(String cords){
+        System.out.println("MAKE TURN");
         if(board.new_mill_cords != -1 && rules.canKill(whose_turn, board.indexToCords(board.new_mill_cords), cords) && board.mustKill){
             board.kill(whose_turn, board.indexToCords(board.new_mill_cords), cords);
             whose_turn = Board9.opponent(whose_turn);
         }else if(rules.canPlace(whose_turn, cords)) {
             board.place(whose_turn, cords);
+            System.out.println(whose_turn);
             whose_turn = Board9.opponent(whose_turn);
+            System.out.println(whose_turn);
         }
         if(board.mustKill){
             board.mustKill=false;

@@ -36,6 +36,10 @@ public class Main {
                     if (game.canTurn(cords1)) {
                         game.makeTurn(cords1);
                         game.newMillAppeared(cords1, cords1);
+                        for (int i=0;i<24;i++){
+                            System.out.println(i + ":  " + board.is_mill[i]);
+                            System.out.println(board.new_mill_cords);
+                        }
                     }
                 }
             }catch (ArrayIndexOutOfBoundsException e){

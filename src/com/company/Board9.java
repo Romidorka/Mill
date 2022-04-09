@@ -68,47 +68,34 @@ public class Board9 {
 
     public void place(int player, String cords){
         int index = cordsToIndex(cords);
-//        if(board[index]==0){
-            board[index] = (byte)player;
-            placed_dots[player-1]+=1;
-//            check_mills(index);
 
-            if(placed_dots[0] == men_count && placed_dots[1] == men_count){
-                phase = PHASE_MOVING;
-            }
-//        }
+        board[index] = (byte)player;
+        placed_dots[player-1]+=1;
+
+        if(placed_dots[0] == men_count && placed_dots[1] == men_count){
+            phase = PHASE_MOVING;
+        }
     }
 
     public void move(int player, String cords1, String cords2){
         int index1 = cordsToIndex(cords1);
         int index2 = cordsToIndex(cords2);
-//        if(board[index1]==player && board[index2]==0 && is_neighbor(index1, index2)){
-            board[index1]=0;
-            board[index2]=player;
-//            check_mills(index1);
-//            check_mills(index2);
-//        }
+        board[index1]=0;
+        board[index2]=player;
     }
 
     public void fly(int player, String cords1, String cords2){
         int index1 = cordsToIndex(cords1);
         int index2 = cordsToIndex(cords2);
-//        if(board[index1]==player && board[index2]==0 && men_count-died_dots[player-1] == men_need_to_fly){
-            board[index1]=0;
-            board[index2]=player;
-//            check_mills(index1);
-//            check_mills(index2);
-//        }
+        board[index1]=0;
+        board[index2]=player;
     }
 
     public void kill(int player, String cords1, String cords2){
         int index1 = cordsToIndex(cords1);
         int index2 = cordsToIndex(cords2);
-//        if(board[index1]==player && board[index2]!=0){
-            board[index2]=0;
-            died_dots[player-1]+=1;
-//            check_mills(index2);
-//        }
+        board[index2]=0;
+        died_dots[player-1]+=1;
     }
 
     public void check_mills(int index){ // Обновляет массив с мельницами
@@ -128,18 +115,21 @@ public class Board9 {
                 if(in_mill(n[i])) return true;
             }
         }
+        if(in_mill(index)) return true;
         return false;
     }
 
     private boolean in_mill(int index){ // Является ли точка центром мельницы
         int[] n = get_neighbors(index);
         if(n[0]!=-1 && n[1]!=-1) {
-            if (board[n[0]] == board[n[1]] && board[n[0]] == board[index] && is_mill[n[0]] != board[n[0]]) {
+            if (board[n[0]] == board[n[1]] && board[n[0]] == board[index] && is_mill[n[0]] != board[n[0]] && board[n[0]] != 0) {
+                new_mill_cords = index;
                 return true;
             }
         }
         if(n[2]!=-1 && n[3]!=-1) {
-            if (board[n[2]] == board[n[3]] && board[n[2]] == board[index] && is_mill[n[2]] != board[n[2]]) {
+            if (board[n[2]] == board[n[3]] && board[n[2]] == board[index] && is_mill[n[2]] != board[n[2]] && board[n[2]] != 0) {
+                new_mill_cords = index;
                 return true;
             }
         }
@@ -150,7 +140,7 @@ public class Board9 {
         int[] n = get_neighbors(index);
 
         if(n[0]!=-1 && n[1]!=-1) {
-            if (board[n[0]] == board[n[1]] && board[n[0]] == board[index]) {
+            if (board[n[0]] == board[n[1]] && board[n[0]] == board[index] && board[n[0]] != 0) {
                 is_mill[n[0]] = board[n[0]];
                 is_mill[n[1]] = board[n[0]];
                 is_mill[index] = board[n[0]];
@@ -161,8 +151,8 @@ public class Board9 {
                 is_mill[index] = 0;
             }
         }
-        if(n[2]!=-1 && n[3]!=-1 && n[0]!=-1) {
-            if (board[n[2]] == board[n[3]] && board[n[2]] == board[index]) {
+        if(n[2]!=-1 && n[3]!=-1) {
+            if (board[n[2]] == board[n[3]] && board[n[2]] == board[index] && board[n[0]] != 0) {
                 is_mill[n[2]] = board[n[0]];
                 is_mill[n[3]] = board[n[0]];
                 is_mill[index] = board[n[0]];
